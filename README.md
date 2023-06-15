@@ -5566,3 +5566,1341 @@ int main()
  
 }
 ```
+## Modudle 17
+
+### Day 1
+  Connect the nodes of the graph below using the adjacency list representation. ( a newNode is created for each vertex )
+![image](https://github.com/Saran408/datastructures/assets/75235427/799c8116-a3a9-4a4b-8d39-473417826d6a)
+
+```c
+void addEdge(struct Graph* graph, int s, int d) {
+  // Add edge from s to d
+  struct node* newNode = createNode(d);
+  newNode->next = graph->adjLists[s];
+  graph->adjLists[s] = newNode;
+  // Add edge from d to s
+  newNode = createNode(s);
+  newNode->next = graph->adjLists[d];
+  graph->adjLists[d] = newNode;
+}
+```
+Print the adjacency matrix of the graph shown below.
+![image](https://github.com/Saran408/datastructures/assets/75235427/40b9a123-da35-4900-8ba9-5c4c168edfa2)
+
+```c
+void printAdjMatrix(int arr[][V])
+ {
+  
+  int i, j;
+  for (i = 0;i < V;i++)
+  {
+    for (j = 0;j < V;j++)
+    {
+      printf("%d ", arr[i][j]);
+    }
+    printf("\n");
+  }
+}
+```
+Formulate the code to obtain the following graph using the adjacency list representation.
+![image](https://github.com/Saran408/datastructures/assets/75235427/cf54cbc1-adc5-45a2-94b2-e6add13d94c4)
+```c
+int main(void)
+{   int n,i;
+    scanf("%d",&N);
+    scanf("%d",&n);
+    // input array containing edges of the graph (as per the above diagram)
+    // (x, y) pair in the array represents an edge from x to y
+    struct Edge edges[n];
+    for (i = 0; i < n; i++)
+    {
+        // get the source and destination vertex
+        scanf("%d",&edges[i].src);
+        scanf("%d",&edges[i].dest);
+      
+    }
+   
+    // construct a graph from the given edges
+    struct Graph *graph = createGraph(edges, n);
+ 
+    // Function to print adjacency list representation of a graph
+    printGraph(graph);
+ 
+    return 0;
+}
+```
+Formulate the code to connect the nodes of the graph below in the adjacency matrix representation.
+![image](https://github.com/Saran408/datastructures/assets/75235427/cd28a909-d918-47cd-85d6-f27471f230c1)
+
+```c
+int main()
+{ int e1,e2,me,n,i;
+  scanf("%d",&V);
+  int adjMatrix[V][V];
+  init(adjMatrix);
+  n=V;
+  me=n*(n-1)/2;
+  for(i=1;i<=me;i++)
+  {  
+    scanf("%d%d",&e1,&e2);
+    addEdge(adjMatrix, e1,e2);
+    if((e1==-1)&&(e2==-1))
+       break;
+  }
+  printAdjMatrix(adjMatrix);
+  return 0;
+}
+```
+Integrate the code for CreateAGraph function in the adjacency list representation of the graph shown below. 
+![image](https://github.com/Saran408/datastructures/assets/75235427/0fa408e9-a943-4877-ac2d-bd28bec58014)
+```c
+struct Graph* createAGraph(int vertices) {
+  struct Graph* graph = malloc(sizeof(struct Graph));
+  graph->numVertices = vertices;
+
+  graph->adjLists = malloc(vertices * sizeof(struct node*));
+
+  int i;
+  for (i = 0; i < vertices; i++)
+    graph->adjLists[i] = NULL;
+
+  return graph;
+}
+```
+
+### Day 2
+Compose the code for the creategraph function , for the construction of the graph below, in order to traverse it in the breadth first manner.
+![image](https://github.com/Saran408/datastructures/assets/75235427/6cae48a1-f392-4466-875a-4177c3abcd64)
+
+```c
+struct Graph* createGraph(int vertices) {
+  struct Graph* graph = malloc(sizeof(struct Graph));
+  graph->numVertices = vertices;
+ 
+  graph->adjLists = malloc(vertices * sizeof(struct node*));
+  graph->visited = malloc(vertices * sizeof(int));
+ 
+  int i;
+  for (i = 0; i < vertices; i++) {
+    graph->adjLists[i] = NULL;
+    graph->visited[i] = 0;
+  }
+ 
+  return graph;
+}
+```
+
+Develop the code for the addEdge function ,for the construction of the graph below, in order to traverse it in the Breadth First fashion.
+![image](https://github.com/Saran408/datastructures/assets/75235427/509c404e-70be-4f51-9993-45ac7622cbe3)
+
+```c
+  void addEdge(struct Graph* graph, int src, int dest) {
+  // Add edge from src to dest
+  struct node* newNode = createNode(dest);
+  newNode->next = graph->adjLists[src];
+  graph->adjLists[src] = newNode;
+
+  // Add edge from dest to src
+  newNode = createNode(src);
+  newNode->next = graph->adjLists[dest];
+  graph->adjLists[dest] = newNode;
+}
+```
+
+Formulate the code for the bfs function in order to traverse the graph below in the breadth first manner.
+![image](https://github.com/Saran408/datastructures/assets/75235427/3882a5dc-a2f3-475d-b0a1-23f2a3d7c1ab)
+
+```c
+void bfs(struct Graph* graph, int startVertex) {
+  struct queue* q = createQueue();
+ 
+  graph->visited[startVertex] = 1;
+  enqueue(q, startVertex);
+ 
+  while (!isEmpty(q)) {
+    printQueue(q);
+    int currentVertex = dequeue(q);
+    printf("Visited %d\n ", currentVertex);
+   
+    struct node* temp = graph->adjLists[currentVertex];
+ 
+    while (temp) {
+      int adjVertex = temp->vertex;
+ 
+      if (graph->visited[adjVertex] == 0) {
+        graph->visited[adjVertex] = 1;
+        enqueue(q, adjVertex);
+      }
+      temp = temp->next;
+    }
+  }
+}
+```
+
+Integrate the code for the dequeue function in order to traverse the graph below in the breadth first fashion.
+
+![image](https://github.com/Saran408/datastructures/assets/75235427/842b25f9-b3ca-446f-a6a1-c49325b3dfae)
+
+```c
+int dequeue(struct queue* q) {
+  int item;
+  if (isEmpty(q)) {
+    printf("Queue is empty");
+    item = -1;
+  } else {
+    item = q->items[q->front];
+    q->front++;
+    if (q->front > q->rear) {
+      printf("Resetting queue ");
+      q->front = q->rear = -1;
+    }
+  }
+  return item;
+}
+```
+Traverse the following graph in the breadth first manner by supplying the number of vertices, the edges and the start vertex.
+![image](https://github.com/Saran408/datastructures/assets/75235427/d9f2c242-4bd1-4b4c-aefe-069ea1b21106)
+```c
+int main() {
+ 
+  int n,e1,e2,sv,me;
+  scanf("%d",&n);
+  me=n*(n-1)/2;
+  struct Graph* graph = createGraph(n);
+  for(int i=1;i<=me;i++)
+  {
+   scanf("%d%d",&e1,&e2);
+   addEdge(graph,e1,e2);
+   if((e1==-1)&&(e2==-1))
+     break;
+  }
+  scanf("%d",&sv);
+  bfs(graph,sv);
+  return 0;
+}
+```
+
+### Day 3
+Develop the code for the addedge function for the construction of the graph below in order to traverse it in the depth first manner.
+![image](https://github.com/Saran408/datastructures/assets/75235427/def86bce-9033-4809-ab86-ba7346ada66f)
+```c
+void addEdge(struct Graph* graph, int src, int dest) {
+  // Add edge from src to dest
+  struct node* newNode = createNode(dest);
+  newNode->next = graph->adjLists[src];
+  graph->adjLists[src] = newNode;
+
+  // Add edge from dest to src
+  newNode = createNode(src);
+  newNode->next = graph->adjLists[dest];
+  graph->adjLists[dest] = newNode;
+}
+```
+
+Compose the code for the createGraph function in order to traverse the graph below in the depth first manner.
+
+![image](https://github.com/Saran408/datastructures/assets/75235427/52952074-598b-498b-a28a-03470c6b010e)
+```c
+struct Graph* createGraph(int vertices) {
+  struct Graph* graph = malloc(sizeof(struct Graph));
+  graph->numVertices = vertices;
+
+  graph->adjLists = malloc(vertices * sizeof(struct node*));
+
+  graph->visited = malloc(vertices * sizeof(int));
+
+  int i;
+  for (i = 0; i < vertices; i++) {
+    graph->adjLists[i] = NULL;
+    graph->visited[i] = 0;
+  }
+  return graph;
+}
+```
+
+Formulate the code for the DFS function in order to traverse the graph below in the depth first manner.
+![image](https://github.com/Saran408/datastructures/assets/75235427/158fa962-b674-4e84-80da-b36581df98c0)
+
+```c
+void DFS(struct Graph* graph, int vertex) {
+  struct node* adjList = graph->adjLists[vertex];
+  struct node* temp = adjList;
+
+  graph->visited[vertex] = 1;
+  printf("Visited %d \n", vertex);
+
+  while (temp != NULL) {
+    int connectedVertex = temp->vertex;
+
+    if (graph->visited[connectedVertex] == 0) {
+      DFS(graph, connectedVertex);
+    }
+    temp = temp->next;
+  }
+}
+```
+
+Integrate the code for the printGraph function in order to display the following graph traversed in the depth first fashion.
+
+```c
+void printGraph(struct Graph* graph) {
+  int v;
+  for (v = 0; v < graph->numVertices; v++) {
+    struct node* temp = graph->adjLists[v];
+    printf("Adjacency list of vertex %d\n ", v);
+    while (temp) {
+      printf("%d -> ", temp->vertex);
+      temp = temp->next;
+    }
+    printf("\n");
+  }
+}
+```
+
+Traverse the following graph in the depth first manner by supplying the number of vertices, the edges and the start vertex.
+![image](https://github.com/Saran408/datastructures/assets/75235427/fdb4e77e-80b6-4cac-ba14-dc000a55a335)
+
+```c
+int main() 
+{ int n,e1,e2,me;
+  scanf("%d",&n);
+  me=n*(n-1)/2;
+  struct Graph* graph = createGraph(n);
+  for(int i=1;i<=me;i++)
+  {
+   scanf("%d%d",&e1,&e2);
+   addEdge(graph,e1,e2);
+   if((e1==-1)&&(e2==-1))
+     break;
+  }
+  printGraph(graph);
+  DFS(graph,0);
+  return 0;
+ }
+ ```
+### Day 4
+Incorporate the check in the code to determine a cyclic graph which aborts the topological ordering of the graph shown below. 
+![image](https://github.com/Saran408/datastructures/assets/75235427/870b81ba-524b-44a1-a286-aab8e27e30ca)
+
+```c
+int main()
+{
+        int i,v,count,topo_order[MAX],indeg[MAX];
+
+        create_graph();
+
+        /*Find the indegree of each vertex*/
+        for(i=0;i<n;i++)
+        {
+                indeg[i] = indegree(i);
+                if( indeg[i] == 0 )
+                        insert_queue(i);
+        }
+
+        count = 0;
+
+        while(  !isEmpty_queue( ) && count < n )
+        {
+                v = delete_queue();
+        topo_order[++count] = v; /*Add vertex v to topo_order array*/
+                /*Delete all edges going from vertex v */
+                for(i=0; i<n; i++)
+                {
+                        if(adj[v][i] == 1)
+                        {
+                                adj[v][i] = 0;
+                                indeg[i] = indeg[i]-1;
+                                if(indeg[i] == 0)
+                                        insert_queue(i);
+                        }
+                }
+        }
+
+        if( count < n )
+        {
+                printf("No topological ordering possible, graph contains cycle\n");
+                exit(1);
+        }
+        printf("Vertices in topological order are :\n");
+        for(i=1; i<=count; i++)
+                printf( "%d ",topo_order[i] );
+        printf("\n");
+
+        return 0;
+}/*End of main()*/
+```
+Compose the code to display the vertices of the graph below in the topological order.
+![image](https://github.com/Saran408/datastructures/assets/75235427/b7bf0fb3-3a70-4e86-900c-cd850b1992d7)
+```c
+int main()
+{
+        int i,v,count,topo_order[MAX],indeg[MAX];
+
+        create_graph();
+
+        /*Find the indegree of each vertex*/
+        for(i=0;i<n;i++)
+        {
+                indeg[i] = indegree(i);
+                if( indeg[i] == 0 )
+                        insert_queue(i);
+        }
+
+        count = 0;
+
+        while(  !isEmpty_queue( ) && count < n )
+        {
+                v = delete_queue();
+        topo_order[++count] = v; /*Add vertex v to topo_order array*/
+                /*Delete all edges going from vertex v */
+                for(i=0; i<n; i++)
+                {
+                        if(adj[v][i] == 1)
+                        {
+                                adj[v][i] = 0;
+                                indeg[i] = indeg[i]-1;
+                                if(indeg[i] == 0)
+                                        insert_queue(i);
+                        }
+                }
+        }
+
+        if( count < n )
+        {
+                printf("No topological ordering possible, graph contains cycle\n");
+                exit(1);
+        }
+        printf("Vertices in topological order are :\n");
+        for(i=1; i<=count; i++)
+                printf( "%d ",topo_order[i] );
+        printf("\n");
+
+        return 0;
+}/*End of main()*/
+```
+Complete the code to detect all the outgoing edges from vertex v, to display the topological order of the graph below.
+![image](https://github.com/Saran408/datastructures/assets/75235427/e441241e-c564-434b-b98e-b499305355b9)
+```c
+int main()
+{
+        int i,v,count,topo_order[MAX],indeg[MAX];
+
+        create_graph();
+
+        /*Find the indegree of each vertex*/
+        for(i=0;i<n;i++)
+        {
+                indeg[i] = indegree(i);
+                if( indeg[i] == 0 )
+                        insert_queue(i);
+        }
+
+        count = 0;
+
+        while(  !isEmpty_queue( ) && count < n )
+        {
+                v = delete_queue();
+        topo_order[++count] = v; /*Add vertex v to topo_order array*/
+                /*Delete all edges going from vertex v */
+                for(i=0; i<n; i++)
+                {
+                        if(adj[v][i] == 1)
+                        {
+                                adj[v][i] = 0;
+                                indeg[i] = indeg[i]-1;
+                                if(indeg[i] == 0)
+                                        insert_queue(i);
+                        }
+                }
+        }
+
+        if( count < n )
+        {
+                printf("No topological ordering possible, graph contains cycle\n");
+                exit(1);
+        }
+        printf("Vertices in topological order are :\n");
+        for(i=1; i<=count; i++)
+                printf( "%d ",topo_order[i] );
+        printf("\n");
+
+        return 0;
+}/*End of main()*/
+```
+
+Integrate the code for the initialization of the adjacency matrix to derive the topological order of the graph below. (Print Invalid edge! if initialization of the specified edges is not possible)
+![image](https://github.com/Saran408/datastructures/assets/75235427/cdd26b60-2067-4335-a545-2bd0120e281b)
+```c
+void create_graph()
+{
+        int i,max_edges,origin,destin;
+
+       // printf("\nEnter number of vertices : ");
+        scanf("%d",&n);
+        max_edges = n*(n-1);
+
+        for(i=1; i<=max_edges; i++)
+        {
+               // printf("\nEnter edge %d(-1 -1 to quit): ",i);
+                scanf("%d %d",&origin,&destin);
+
+                if((origin == -1) && (destin == -1))
+                        break;
+
+                if( origin >= n || destin >= n || origin<0 || destin<0)
+                {
+                        printf("Invalid edge!\n");
+                        i--;
+                }
+                else
+                        adj[origin][destin] = 1;
+        }
+      }
+```
+Compose the code for the indegree function to obtain the topological order of the graph below.
+![image](https://github.com/Saran408/datastructures/assets/75235427/04230d00-bbec-4f14-bd07-7d1931324459)
+```c
+int indegree(int v)
+{
+        int i,in_deg = 0;
+        for(i=0; i<n; i++)
+                if(adj[i][v] == 1)
+                        in_deg++;
+        return in_deg;
+}/*End of indegree() */
+```
+
+## Module 18
+### Day 1
+Write a C Program to implement Prim's  Algorithm for finding Total Cost of spanning tree.
+
+For example:
+
+Input	Result
+5
+0 0 0 0 1
+1 0 0 2 3
+0 1 2 3 4
+6 5 4 2 1
+0 1 7 8 9
+0 0 0 0 1
+0 0 1 2 0
+0 1 0 0 0
+0 2 0 0 1
+1 0 0 1 0
+
+Total cost of spanning tree=10013
+4 
+0 0 0 1
+1 2 3 4
+9 0 3 1
+0 6 7 0
+0 0 0 1
+0 0 3 0
+0 3 0 1
+1 0 1 0
+
+Total cost of spanning tree=10007
+
+```c
+#include<stdio.h>
+#include<stdlib.h>
+ 
+#define infinity 9999
+#define MAX 20
+ 
+int G[MAX][MAX],spanning[MAX][MAX],n;
+ 
+int prims();
+ 
+int main()
+{
+int i,j,total_cost;
+scanf("%d",&n);
+for(i=0;i<n;i++)
+for(j=0;j<n;j++)
+scanf("%d",&G[i][j]);
+total_cost=prims();
+
+for(i=0;i<n;i++)
+{
+for(j=0;j<n;j++)
+printf("%d ",spanning[i][j]);
+printf("\n");
+}
+printf("\nTotal cost of spanning tree=%d",total_cost);
+return 0;
+}
+ 
+int prims()
+{
+int cost[MAX][MAX];
+int u,v,min_distance,distance[MAX],from[MAX];
+int visited[MAX],no_of_edges,i,min_cost,j;
+//create cost[][] matrix,spanning[][]
+for(i=0;i<n;i++)
+for(j=0;j<n;j++)
+{
+if(G[i][j]==0)
+cost[i][j]=infinity;
+else
+cost[i][j]=G[i][j];
+spanning[i][j]=0;
+}
+//initialise visited[],distance[] and from[]
+distance[0]=0;
+visited[0]=1;
+for(i=1;i<n;i++)
+{
+distance[i]=cost[0][i];
+from[i]=0;
+visited[i]=0;
+}
+min_cost=0; //cost of spanning tree
+no_of_edges=n-1; //no. of edges to be added
+while(no_of_edges>0)
+{
+//find the vertex at minimum distance from the tree
+min_distance=infinity;
+for(i=1;i<n;i++)
+if(visited[i]==0&&distance[i]<min_distance)
+{
+v=i;
+min_distance=distance[i];
+}
+u=from[v];
+//insert the edge in spanning tree
+spanning[u][v]=distance[v];
+spanning[v][u]=distance[v];
+no_of_edges--;
+visited[v]=1;
+//updated the distance[] array
+for(i=1;i<n;i++)
+if(visited[i]==0&&cost[i][v]<distance[i])
+{
+distance[i]=cost[i][v];
+from[i]=v;
+}
+min_cost=min_cost+cost[u][v];
+}
+return(min_cost);
+}
+```
+
+Write a C Program to implement Prim's Algorithm for finding minimum cost.
+
+For example:
+
+Input	Result
+6
+0 3 1 6 0 0
+3 0 5 0 3 0
+1 5 0 5 6 4
+6 0 5 0 0 2
+0 3 6 0 0 6
+0 0 4 2 6 0
+Edge 1:(1 3) cost:1
+Edge 2:(1 2) cost:3
+Edge 3:(2 5) cost:3
+Edge 4:(3 6) cost:4
+Edge 5:(6 4) cost:2
+Minimum Cost=13
+5
+1 2 3 4 5
+0 0 0 1 2
+0 0 3 4 5
+5 4 3 0 1
+0 0 0 0 1
+Edge 1:(1 2) cost:2
+Edge 2:(2 4) cost:1
+Edge 3:(4 5) cost:1
+Edge 4:(1 3) cost:3
+Minimum Cost=7
+
+```c
+#include<stdio.h>
+int a,b,u,v,n,i,j,ne=1;
+int visited[10]={0},min,mincost=0,cost[10][10];
+int main()
+{
+scanf("%d",&n);
+for(i=1;i<=n;i++)
+for(j=1;j<=n;j++)
+{
+scanf("%d",&cost[i][j]);
+ if(cost[i][j]==0)
+ cost[i][j]=999;
+ }
+ visited[1]=1;
+//printf("\n");
+ while(ne < n)
+ {
+for(i=1,min=999;i<=n;i++)
+ for(j=1;j<=n;j++)
+ if(cost[i][j]< min)
+ if(visited[i]!=0)
+ {
+ min=cost[i][j];
+ a=u=i;
+b=v=j;
+}
+if(visited[u]==0 || visited[v]==0)
+{
+ printf("Edge %d:(%d %d) cost:%d\n",ne++,a,b,min);
+ mincost+=min;
+visited[b]=1;
+ }
+cost[a][b]=cost[b][a]=999;
+ }
+printf("Minimum Cost=%d\n",mincost);
+return 0;
+}
+```
+
+Write a C Program to implement Prim's  Algorithm for finding Total Cost of spanning tree.
+
+For example:
+
+Input	Result
+5
+0 0 0 0 1
+1 0 0 2 3
+0 1 2 3 4
+6 5 4 2 1
+0 1 7 8 9
+0 0 0 0 1
+0 0 1 2 0
+0 1 0 0 0
+0 2 0 0 1
+1 0 0 1 0
+
+Total cost of spanning tree=10013
+4 
+0 0 0 1
+1 2 3 4
+9 0 3 1
+0 6 7 0
+0 0 0 1
+0 0 3 0
+0 3 0 1
+1 0 1 0
+
+Total cost of spanning tree=10007
+
+```c
+#include<stdio.h>
+#include<stdlib.h>
+ 
+#define infinity 9999
+#define MAX 20
+ 
+int G[MAX][MAX],spanning[MAX][MAX],n;
+ 
+int prims();
+ 
+int main()
+{
+int i,j,total_cost;
+scanf("%d",&n);
+for(i=0;i<n;i++)
+for(j=0;j<n;j++)
+scanf("%d",&G[i][j]);
+total_cost=prims();
+
+for(i=0;i<n;i++)
+{
+for(j=0;j<n;j++)
+printf("%d ",spanning[i][j]);
+printf("\n");
+}
+printf("\nTotal cost of spanning tree=%d",total_cost);
+return 0;
+}
+ 
+int prims()
+{
+int cost[MAX][MAX];
+int u,v,min_distance,distance[MAX],from[MAX];
+int visited[MAX],no_of_edges,i,min_cost,j;
+//create cost[][] matrix,spanning[][]
+for(i=0;i<n;i++)
+for(j=0;j<n;j++)
+{
+if(G[i][j]==0)
+cost[i][j]=infinity;
+else
+cost[i][j]=G[i][j];
+spanning[i][j]=0;
+}
+//initialise visited[],distance[] and from[]
+distance[0]=0;
+visited[0]=1;
+for(i=1;i<n;i++)
+{
+distance[i]=cost[0][i];
+from[i]=0;
+visited[i]=0;
+}
+min_cost=0; //cost of spanning tree
+no_of_edges=n-1; //no. of edges to be added
+while(no_of_edges>0)
+{
+//find the vertex at minimum distance from the tree
+min_distance=infinity;
+for(i=1;i<n;i++)
+if(visited[i]==0&&distance[i]<min_distance)
+{
+v=i;
+min_distance=distance[i];
+}
+u=from[v];
+//insert the edge in spanning tree
+spanning[u][v]=distance[v];
+spanning[v][u]=distance[v];
+no_of_edges--;
+visited[v]=1;
+//updated the distance[] array
+for(i=1;i<n;i++)
+if(visited[i]==0&&cost[i][v]<distance[i])
+{
+distance[i]=cost[i][v];
+from[i]=v;
+}
+min_cost=min_cost+cost[u][v];
+}
+return(min_cost);
+}
+```
+
+### Day 2
+
+Write a C program to implement Kruskal's algorithm for finding minimum cost.
+
+For example:
+
+Input	Result
+3
+1 2 3
+0 0 1
+0 1 1
+1 edge (2,3) =1
+2 edge (1,2) =2
+Minimum cost = 3
+4
+1 2 3 4
+1 0 0 1
+1 0 2 1
+1 1 1 1
+1 edge (2,1) =1
+2 edge (2,4) =1
+3 edge (3,1) =1
+Minimum cost = 3
+
+```c
+    #include <stdio.h>
+    #include <stdlib.h>
+    int i,j,k,a,b,u,v,n,ne=1;
+    int min,mincost=0,cost[9][9],parent[9];
+    int find(int);
+    int uni(int,int);
+    int main()
+    {
+          scanf("%d",&n);
+          for(i=1;i<=n;i++)
+     {
+     for(j=1;j<=n;j++)
+     {
+     scanf("%d",&cost[i][j]);
+     if(cost[i][j]==0)
+     cost[i][j]=999;
+     }
+     }
+         while(ne < n)
+     {
+     for(i=1,min=999;i<=n;i++)
+     {
+     for(j=1;j <= n;j++)
+     {
+     if(cost[i][j] < min)
+     {
+     min=cost[i][j];
+     a=u=i;
+     b=v=j;
+     }
+     }
+     }
+     u=find(u);
+     v=find(v);
+     if(uni(u,v))
+     {
+     printf("%d edge (%d,%d) =%d\n",ne++,a,b,min);
+     mincost +=min;
+     }
+     cost[a][b]=cost[b][a]=999;
+     }
+     printf("Minimum cost = %d\n",mincost);
+     return 0;
+       }
+    int find(int i)
+    {
+     while(parent[i])
+     i=parent[i];
+     return i;
+    }
+    int uni(int i,int j)
+    {
+     if(i!=j)
+     {
+     parent[j]=i;
+     return 1;
+     }
+     return 0;
+    }
+```
+Write a C program to implement Kruskal's Algorithm for finding minimum cost.
+
+For example:
+
+Input	Result
+6
+0 3 1 6 0 0
+3 0 5 0 3 0
+1 5 0 5 6 4
+6 0 5 0 0 2
+0 3 6 0 0 6
+0 0 4 2 6 0
+2 0 1
+5 3 2
+1 0 3
+4 1 3
+5 2 4
+Cost of the spanning tree=13
+5
+1 2 3 4 5
+0 1 0 1 0
+1 1 1 1 1
+9 8 7 6 5
+6 2 8 5 1
+2 0 1
+2 1 1
+4 1 2
+4 3 5
+Cost of the spanning tree=9
+
+```c
+#include<stdio.h>
+ 
+#define MAX 30
+ 
+typedef struct edge
+{
+int u,v,w;
+}edge;
+ 
+typedef struct edgelist
+{
+edge data[MAX];
+int n;
+}edgelist;
+ 
+edgelist elist;
+ 
+int G[MAX][MAX],n;
+edgelist spanlist;
+ 
+void kruskal();
+int find(int belongs[],int vertexno);
+void union1(int belongs[],int c1,int c2);
+void sort();
+void print();
+ 
+int main()
+{
+int i,j;
+scanf("%d",&n);
+for(i=0;i<n;i++)
+for(j=0;j<n;j++)
+scanf("%d",&G[i][j]);
+kruskal();
+print();
+return 0;
+}
+void kruskal()
+{
+int belongs[MAX],i,j,cno1,cno2;
+elist.n=0;
+ 
+for(i=1;i<n;i++)
+for(j=0;j<i;j++)
+{
+if(G[i][j]!=0)
+{
+elist.data[elist.n].u=i;
+elist.data[elist.n].v=j;
+elist.data[elist.n].w=G[i][j];
+elist.n++;
+}
+}
+ 
+sort();
+for(i=0;i<n;i++)
+belongs[i]=i;
+spanlist.n=0;
+for(i=0;i<elist.n;i++)
+{
+cno1=find(belongs,elist.data[i].u);
+cno2=find(belongs,elist.data[i].v);
+if(cno1!=cno2)
+{
+spanlist.data[spanlist.n]=elist.data[i];
+spanlist.n=spanlist.n+1;
+union1(belongs,cno1,cno2);
+}
+}
+}
+ 
+int find(int belongs[],int vertexno)
+{
+return(belongs[vertexno]);
+}
+ 
+void union1(int belongs[],int c1,int c2)
+{
+int i;
+for(i=0;i<n;i++)
+if(belongs[i]==c2)
+belongs[i]=c1;
+}
+ 
+void sort()
+{
+int i,j;
+edge temp;
+for(i=1;i<elist.n;i++)
+for(j=0;j<elist.n-1;j++)
+if(elist.data[j].w>elist.data[j+1].w)
+{
+temp=elist.data[j];
+elist.data[j]=elist.data[j+1];
+elist.data[j+1]=temp;
+}
+}
+ 
+void print()
+{
+int i,cost=0;
+for(i=0;i<spanlist.n;i++)
+{
+printf("%d %d %d\n",spanlist.data[i].u,spanlist.data[i].v,spanlist.data[i].w);
+cost=cost+spanlist.data[i].w;
+}
+printf("Cost of the spanning tree=%d\n",cost);
+}
+```
+### Day 3
+
+Write a C Program to implement Dijkstra's Algorithm to find the shortest path.
+
+For example:
+
+Input	Result
+5
+1 2 3 4 5
+1 1 4 5 6 
+1 8 9 6 5
+7 6 5 4 3
+9 8 7 6 5
+3
+Distance of node0=6
+Path=0<-2<-3Distance of node1=6
+Path=1<-3Distance of node2=5
+Path=2<-3Distance of node4=3
+Path=4<-3
+4
+1 2 3 4
+9 8 7 6
+0 7 4 2
+1 6 8 3
+2
+Distance of node0=3
+Path=0<-3<-2Distance of node1=5
+Path=1<-0<-3<-2Distance of node3=2
+Path=3<-2
+
+```c
+#include<stdio.h>
+#define INFINITY 9999
+#define MAX 10
+ 
+void dijkstra(int G[MAX][MAX],int n,int startnode);
+ 
+int main()
+{
+int G[MAX][MAX],i,j,n,u;
+scanf("%d",&n);
+for(i=0;i<n;i++)
+for(j=0;j<n;j++)
+scanf("%d",&G[i][j]);
+scanf("%d",&u);
+dijkstra(G,n,u);
+return 0;
+}
+ 
+void dijkstra(int G[MAX][MAX],int n,int startnode)
+{
+ 
+int cost[MAX][MAX],distance[MAX],pred[MAX];
+int visited[MAX],count,mindistance,nextnode,i,j;
+//pred[] stores the predecessor of each node
+//count gives the number of nodes seen so far
+//create the cost matrix
+for(i=0;i<n;i++)
+for(j=0;j<n;j++)
+if(G[i][j]==0)
+cost[i][j]=INFINITY;
+else
+cost[i][j]=G[i][j];
+//initialize pred[],distance[] and visited[]
+for(i=0;i<n;i++)
+{
+distance[i]=cost[startnode][i];
+pred[i]=startnode;
+visited[i]=0;
+}
+distance[startnode]=0;
+visited[startnode]=1;
+count=1;
+while(count<n-1)
+{
+mindistance=INFINITY;
+//nextnode gives the node at minimum distance
+for(i=0;i<n;i++)
+if(distance[i]<mindistance&&!visited[i])
+{
+mindistance=distance[i];
+nextnode=i;
+}
+//check if a better path exists through nextnode
+visited[nextnode]=1;
+for(i=0;i<n;i++)
+if(!visited[i])
+if(mindistance+cost[nextnode][i]<distance[i])
+{
+distance[i]=mindistance+cost[nextnode][i];
+pred[i]=nextnode;
+}
+count++;
+}
+ 
+//print the path and distance of each node
+for(i=0;i<n;i++)
+if(i!=startnode)
+{
+printf("Distance of node%d=%d\n",i,distance[i]);
+printf("Path=%d",i);
+j=i;
+do
+{
+j=pred[j];
+printf("<-%d",j);
+}while(j!=startnode);
+}
+}
+```
+
+Write a C Program to implement Dijkstra's Algorithm to find the shortest path.
+
+For example:
+
+Input	Result
+4
+1 2 3 4
+9 8 7 6
+0 7 4 2
+1 6 8 3
+2
+Distance of node0=3
+Path=0<-3<-2Distance of node1=5
+Path=1<-0<-3<-2Distance of node3=2
+Path=3<-2
+6
+1 2 3 4 5 6
+0 9 8 7 6 5
+0 1 1 0 0 1
+2 3 5 6 8 9
+1 2 3 4 5 6
+6 5 4 3 2 1
+0
+Distance of node1=2
+Path=1<-0Distance of node2=3
+Path=2<-0Distance of node3=4
+Path=3<-0Distance of node4=5
+Path=4<-0Distance of node5=4
+Path=5<-2<-0
+
+```c
+#include<stdio.h>
+#define INFINITY 9999
+#define MAX 10
+ 
+void dijkstra(int G[MAX][MAX],int n,int startnode);
+ 
+int main()
+{
+int G[MAX][MAX],i,j,n,u;
+scanf("%d",&n);
+for(i=0;i<n;i++)
+for(j=0;j<n;j++)
+scanf("%d",&G[i][j]);
+scanf("%d",&u);
+dijkstra(G,n,u);
+return 0;
+}
+ 
+void dijkstra(int G[MAX][MAX],int n,int startnode)
+{
+ 
+int cost[MAX][MAX],distance[MAX],pred[MAX];
+int visited[MAX],count,mindistance,nextnode,i,j;
+//pred[] stores the predecessor of each node
+//count gives the number of nodes seen so far
+//create the cost matrix
+for(i=0;i<n;i++)
+for(j=0;j<n;j++)
+if(G[i][j]==0)
+cost[i][j]=INFINITY;
+else
+cost[i][j]=G[i][j];
+//initialize pred[],distance[] and visited[]
+for(i=0;i<n;i++)
+{
+distance[i]=cost[startnode][i];
+pred[i]=startnode;
+visited[i]=0;
+}
+distance[startnode]=0;
+visited[startnode]=1;
+count=1;
+while(count<n-1)
+{
+mindistance=INFINITY;
+//nextnode gives the node at minimum distance
+for(i=0;i<n;i++)
+if(distance[i]<mindistance&&!visited[i])
+{
+mindistance=distance[i];
+nextnode=i;
+}
+//check if a better path exists through nextnode
+visited[nextnode]=1;
+for(i=0;i<n;i++)
+if(!visited[i])
+if(mindistance+cost[nextnode][i]<distance[i])
+{
+distance[i]=mindistance+cost[nextnode][i];
+pred[i]=nextnode;
+}
+count++;
+}
+ 
+//print the path and distance of each node
+for(i=0;i<n;i++)
+if(i!=startnode)
+{
+printf("Distance of node%d=%d\n",i,distance[i]);
+printf("Path=%d",i);
+j=i;
+do
+{
+j=pred[j];
+printf("<-%d",j);
+}while(j!=startnode);
+}
+}
+```
+
+### Day 4
+Write a C program to implement Travelling Salesman Problem.
+
+For example:
+
+Input	Result
+4
+1 2 3 4 
+4 3 2 1
+9 8 7 6
+6 7 8 9
+1--->2--->4--->3--->1
+
+Minimum cost is 20
+5
+1 2 3 4 5
+9 8 7 6 5
+0 0 1 2 3
+1 2 3 0 0
+5 6 7 8 9
+1--->3--->4--->2--->5--->1
+
+Minimum cost is 17
+
+```c
+#include<stdio.h>
+int ary[10][10],completed[10],n,cost=0;
+void takeInput()
+{
+int i,j;
+scanf("%d",&n);
+for(i=0;i < n;i++)
+{
+for( j=0;j < n;j++)
+scanf("%d",&ary[i][j]);
+completed[i]=0;
+}
+}
+void mincost(int city)
+{
+int ncity;
+int least(int);
+completed[city]=1;
+printf("%d--->",city+1);
+ncity=least(city);
+if(ncity==999)
+{
+ncity=0;
+printf("%d",ncity+1);
+cost+=ary[city][ncity];
+return;
+}
+mincost(ncity);
+}
+int least(int c)
+{
+int i,nc=999;
+int min=999,kmin;
+for(i=0;i < n;i++)
+{
+if((ary[c][i]!=0)&&(completed[i]==0))
+if(ary[c][i]+ary[i][c] < min)
+{
+min=ary[i][0]+ary[c][i];
+kmin=ary[c][i];
+nc=i;
+}
+}
+if(min!=999)
+cost+=kmin;
+return nc;
+}
+int main()
+{
+takeInput();
+mincost(0); //passing 0 because starting vertex
+printf("\n\nMinimum cost is %d\n ",cost);
+ 
+return 0;
+}
+```
+
+
+
+ 
