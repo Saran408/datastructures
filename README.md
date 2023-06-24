@@ -7159,5 +7159,35 @@ return(min_cost);
 }
 ```
 
+8)ntegrate the code to display the elements of the circular queue.
 
+```c
+/*#include <stdio.h>
+
+#define SIZE 5
+
+int items[SIZE];
+int front = -1, rear = -1;
+*/
+void display() {
+  int i;
+  if(isEmpty())
+  {
+      printf("Queue is empty");
+  }
+  else
+  {
+      printf(" Front -> %d ",front);
+      printf(" Items -> ");
+      for(i=front;i!=rear;i=(i+1)%SIZE)
+      {
+          printf("%d ",items[i]);
+      }
+      printf("%d ",items[i]);
+      printf(" Rear -> %d\n",rear);
+      
+  }
+
+}
+```
  
