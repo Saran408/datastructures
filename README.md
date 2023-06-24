@@ -6901,6 +6901,263 @@ return 0;
 }
 ```
 
+### Model
+
+1)Write a C function to insert the elements in an AVL Tree.
+
+```c
+node * insert(node *T,int x)
+{
+    if(T==NULL)
+    {
+        T=(node *)malloc(sizeof(node));
+        T->data=x;
+        T->left=NULL;
+        T->right=NULL;
+    }
+    else if(x>T->data)
+    {
+        T->right=insert(T->right,x);
+        if(BF(T)==-2)
+        {
+            if(x>T->right->data)
+            {
+                T=RR(T);
+            }
+            else
+            {
+                T=RL(T);
+            }
+        }
+    }
+    else if(x<T->data)
+    {
+        T->left=insert(T->left,x);
+        if(BF(T)==2)
+        {
+            if(x<T->right->data)
+            {
+                T=LL(T);
+            }
+            else
+            {
+                T=LR(T);
+            }
+        }
+    }
+    T->ht=height(T);
+    return T;
+}
+```
+
+2)Create a C function to delete an element from an AVL Tree.
+
+```c
+node * Delete(node *T,int x)
+{
+    node *p;
+   if(T==NULL)
+   {
+       return NULL;
+   }
+   else if(x>T->data)
+   {
+       T->right=Delete(T->right,x);
+       if(BF(T)==2)
+       {
+           if(BF(T->left)>=0)
+           {
+               T=LL(T);
+           }
+           else
+           {
+               T=LR(T);
+           }
+       }
+   }
+   else if(x<T->data)
+   {
+       T->left=Delete(T->left,x);
+       if(BF(T)==-2)
+       {
+           if(BF(T->left)>=0)
+           {
+               T=RR(T);
+           }
+           else
+           {
+               T=RL(T);
+           }
+       }
+   }
+   else
+   {
+       if(T->right!=NULL)
+       {
+           p=T->right;
+           while(p->left!=NULL)
+           {
+               p=p->left;
+           }
+           T->data=p->data;
+           T->right=Delete(T->right,p->data);
+       }
+       else{
+           return (T->left);
+       }
+   }
+   T->ht=height(T);
+   return (T);
+
+}
+```
+
+3)Write a C function to perform LR rotation in an AVL Tree.
+```c
+node * LR(node *T)
+{
+T->left=rotateleft(T->left);
+T=rotateright(T);
+return(T);
+}
+```
+
+4)Write a C function to insert the elements in a B Tree.
+```c
+// Insert the value
+void insert(int val) {
+  int flag, i;
+  struct BTreeNode *child;
+
+  flag = setValue(val, &i, root, &child);
+  if (flag)
+    root = createNode(i, child);
+}
+```
+
+5)Write a C function to delete an element in a B Tree.
+
+```c
+void delete (int item, struct BTreeNode *myNode) {
+  struct BTreeNode *tmp;
+  if (!delValFromNode(item, myNode)) {
+    printf("Not present\n");
+    return;
+  } else {
+    if (myNode->count == 0) {
+      tmp = myNode;
+      myNode = myNode->linker[0];
+      free(tmp);
+    }
+  }
+  root = myNode;
+  return;
+}
+```
+6)Compose the code for the printGraph function for the following graph that is traversed in the depth first manner.
+![image](https://github.com/Saran408/datastructures/assets/75235427/174b441a-8bea-41ef-b3a4-df1cadbf3779)
+
+```c
+void printGraph(struct Graph* graph) {
+   int v;
+  for (v = 0; v < graph->numVertices; v++) {
+    struct node* temp = graph->adjLists[v];
+    printf("Adjacency list of vertex %d : ->  ", v);
+    while (temp->next!=NULL) {
+      printf("%d -> ", temp->vertex);
+      temp = temp->next;
+    }
+    printf("%d ",temp->vertex);
+    printf("\n");
+  }
+}
+```
+
+7)Write a C program to implement Prim's Algorithm for finding Total Cost of tree.
+```c
+#include<stdio.h>
+#include<stdlib.h>
+ 
+#define infinity 9999
+#define MAX 20
+ 
+int G[MAX][MAX],spanning[MAX][MAX],n;
+ 
+int prims();
+ 
+int main()
+{
+int i,j,total_cost;
+scanf("%d",&n);
+for(i=0;i<n;i++)
+for(j=0;j<n;j++)
+scanf("%d",&G[i][j]);
+total_cost=prims();
+
+for(i=0;i<n;i++)
+{
+for(j=0;j<n;j++)
+printf("%d ",spanning[i][j]);
+printf("\n");
+}
+printf("\nTotal cost of spanning tree=%d",total_cost);
+return 0;
+}
+ 
+int prims()
+{
+int cost[MAX][MAX];
+int u,v,min_distance,distance[MAX],from[MAX];
+int visited[MAX],no_of_edges,i,min_cost,j;
+//create cost[][] matrix,spanning[][]
+for(i=0;i<n;i++)
+for(j=0;j<n;j++)
+{
+if(G[i][j]==0)
+cost[i][j]=infinity;
+else
+cost[i][j]=G[i][j];
+spanning[i][j]=0;
+}
+//initialise visited[],distance[] and from[]
+distance[0]=0;
+visited[0]=1;
+for(i=1;i<n;i++)
+{
+distance[i]=cost[0][i];
+from[i]=0;
+visited[i]=0;
+}
+min_cost=0; //cost of spanning tree
+no_of_edges=n-1; //no. of edges to be added
+while(no_of_edges>0)
+{
+//find the vertex at minimum distance from the tree
+min_distance=infinity;
+for(i=1;i<n;i++)
+if(visited[i]==0&&distance[i]<min_distance)
+{
+v=i;
+min_distance=distance[i];
+}
+u=from[v];
+//insert the edge in spanning tree
+spanning[u][v]=distance[v];
+spanning[v][u]=distance[v];
+no_of_edges--;
+visited[v]=1;
+//updated the distance[] array
+for(i=1;i<n;i++)
+if(visited[i]==0&&cost[i][v]<distance[i])
+{
+distance[i]=cost[i][v];
+from[i]=v;
+}
+min_cost=min_cost+cost[u][v];
+}
+return(min_cost);
+}
+```
 
 
  
